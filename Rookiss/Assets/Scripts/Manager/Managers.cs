@@ -4,24 +4,32 @@ using UnityEngine;
 
 public class Managers : MonoBehaviour
 {
-    static Managers Instance;
-    static Managers GetInstance() { Init(); return Instance; }
+    private static Managers instance;
+    public static Managers Instance { get { Init(); return instance; } }
+
+    private InputManager input = new InputManager();
+    public static InputManager Input { get { return Instance.input; } }
 
     private void Start()
     {
         Init();
     }
 
+    private void Update()
+    {
+        input.OnUpdate();
+    }
+
     static void Init()
     {
         GameObject go = GameObject.Find("@Managers");
-        if (Instance == null)
+        if (instance == null)
         {
             go = new GameObject { name = "@Managers" };
             go.AddComponent<Managers>();
         }
 
         DontDestroyOnLoad(go);
-        Instance = go.GetComponent<Managers>();
+        instance = go.GetComponent<Managers>();
     }
 }
