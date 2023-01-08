@@ -53,6 +53,11 @@ public class PlayerController : MonoBehaviour
         Managers.Input.KeyAction += OnKeyboard;
     }
 
+    private void Update()
+    {
+        RaycastingForCam();
+    }
+
     void OnKeyboard()
     {
         // Local -> World : TransformDirection
@@ -92,5 +97,42 @@ public class PlayerController : MonoBehaviour
             transform.position += Vector3.right * speed * Time.deltaTime;
         }
         //transform.position += transform.TransformDirection(Vector3.forward * speed * Time.deltaTime);
+    }
+
+    void Raycasting()
+    {
+        Vector3 look = transform.TransformDirection(Vector3.forward);
+        RaycastHit hit;
+
+        Debug.DrawRay(transform.position + Vector3.up, look, Color.red);
+
+        if (Physics.Raycast(transform.position + Vector3.up, look, out hit, 1))
+        {
+            Debug.Log($"Raycast {hit.collider.gameObject.name}!");
+        }
+    }
+
+    void RaycastingForCam()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            //Vector3 mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane));
+            //Vector3 dir = mousePos - Camera.main.transform.position;
+            //dir = dir.normalized;
+
+            Debug.DrawRay(Camera.main.transform.position, ray.direction * 100f, Color.red, 1);
+            //Debug.DrawRay(Camera.main.transform.position, dir * 100f, Color.red, 1);
+
+            LayerMask mask = LayerMask.GetMask("Monster") | LayerMask.GetMask("Wall");
+            // int mask = (1 << 8) | (1 << 9);
+
+            RaycastHit hit;
+            //if(Physics.Raycast(Camera.main.transform.position, dir, out hit, 100.0f))
+            if(Physics.Raycast(ray, out hit, 100.0f, mask))
+            {
+                Debug.Log($"Raycast {hit.collider.gameObject.name}!");
+            }
+        }
     }
 }
