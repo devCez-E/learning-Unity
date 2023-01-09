@@ -47,15 +47,30 @@ public class PlayerController : MonoBehaviour
     float speed = 10.0f;
     float yAngle = 0.0f;
 
+    bool moveToDest;
+    Vector3 destination;
+
     private void Start()
     {
         Managers.Input.KeyAction -= OnKeyboard;
         Managers.Input.KeyAction += OnKeyboard;
+        Managers.Input.MouseAction -= OnMouseClicked;
+        Managers.Input.MouseAction += OnMouseClicked;
     }
 
     private void Update()
     {
-        RaycastingForCam();
+        if (moveToDest)
+        {
+            Vector3 dir = destination - transform.position;
+            if (dir.magnitude < 0.001f) moveToDest = false;
+            else
+            {
+                float moveDist = Mathf.Clamp(speed * Time.deltaTime, 0, dir.magnitude);
+                transform.position += dir.normalized * moveDist;
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), 10 * Time.deltaTime);
+            }
+        }
     }
 
     void OnKeyboard()
@@ -97,6 +112,22 @@ public class PlayerController : MonoBehaviour
             transform.position += Vector3.right * speed * Time.deltaTime;
         }
         //transform.position += transform.TransformDirection(Vector3.forward * speed * Time.deltaTime);
+
+        moveToDest = false;
+    }
+
+    void OnMouseClicked(Define.MouseEvent evt)
+    {
+        if (evt != Define.MouseEvent.Click) return;
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        
+        if (Physics.Raycast(ray, out hit, 100.0f, LayerMask.GetMask("Wall")))
+        {
+            destination = hit.point;
+            moveToDest = true;
+        }
     }
 
     void Raycasting()
