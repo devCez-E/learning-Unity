@@ -42,13 +42,26 @@ dir = dir.normalized; // (1.0f, 0.0f, 0.0f)
 MyVector newPos = from + dir * speed;
 */
 
+public enum PlayerState
+{
+    Die,
+    Move,
+    Idle,
+    Channeling,
+    Jump,
+    Fall,
+}
+
 public class PlayerController : MonoBehaviour
 {
     float speed = 10.0f;
     float yAngle = 0.0f;
+    float wait_run_ratio = 0.0f;
 
     bool moveToDest;
     Vector3 destination;
+
+    PlayerState state = PlayerState.Idle;
 
     private void Start()
     {
@@ -60,16 +73,17 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (moveToDest)
+        switch (state)
         {
-            Vector3 dir = destination - transform.position;
-            if (dir.magnitude < 0.001f) moveToDest = false;
-            else
-            {
-                float moveDist = Mathf.Clamp(speed * Time.deltaTime, 0, dir.magnitude);
-                transform.position += dir.normalized * moveDist;
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), 10 * Time.deltaTime);
-            }
+            case PlayerState.Idle:
+                UpdateIdle();
+                break;
+            case PlayerState.Move:
+                UpdateMoving();
+                break;
+            case PlayerState.Die:
+                UpdateDie();
+                break;
         }
     }
 
@@ -122,13 +136,57 @@ public class PlayerController : MonoBehaviour
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        
+
         if (Physics.Raycast(ray, out hit, 100.0f, LayerMask.GetMask("Wall")))
         {
             destination = hit.point;
             moveToDest = true;
+            state = PlayerState.Move;
         }
     }
+
+#region STATEMENT FUNCTION
+    void UpdateIdle()
+    {
+        Animator anim = GetComponent<Animator>();
+        wait_run_ratio = Mathf.Lerp(wait_run_ratio, 0, 10.0f * Time.deltaTime);
+        anim.SetFloat("speed", 0f);
+        //anim.SetFloat("wait_run_ratio", wait_run_ratio);
+        //anim.Play("WAIT_RUN");
+    }
+
+    void UpdateMoving()
+    {
+        Vector3 dir = destination - transform.position;
+        if (dir.magnitude < 0.001f)
+        {
+            moveToDest = false;
+            state = PlayerState.Idle;
+        }
+        else
+        {
+            float moveDist = Mathf.Clamp(speed * Time.deltaTime, 0, dir.magnitude);
+            transform.position += dir.normalized * moveDist;
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), 10 * Time.deltaTime);
+        }
+
+        Animator anim = GetComponent<Animator>();
+        wait_run_ratio = Mathf.Lerp(wait_run_ratio, 1, 10.0f * Time.deltaTime);
+        anim.SetFloat("speed", 1.0f);
+        //anim.SetFloat("wait_run_ratio", wait_run_ratio);
+        //anim.Play("WAIT_RUN");
+    }
+
+    void OnRunEvent(int num)
+    {
+        Debug.Log($"¶Ñ¹÷ -- {num}");
+    }
+
+    void UpdateDie()
+    {
+        Debug.Log(" === DIE ===");
+    }
+#endregion
 
     void Raycasting()
     {
