@@ -15,6 +15,9 @@ public class Managers : MonoBehaviour
     private ResourceManager resource = new ResourceManager();
     public static ResourceManager Resource { get { return Instance.resource; } }
 
+    private UIManager ui = new UIManager();
+    public static UIManager UI { get { return Instance.ui; } }
+
     private void Start()
     {
         Init();

@@ -8,7 +8,7 @@ public class Test : MonoBehaviour
 
     void Start()
     {
-        tank = Managers.Resource.Instantiate("Tank");
+        tank = Managers.Resource.Instantiate("Prefabs/Tank");
 
         Destroy(tank, 3.0f);
     }
