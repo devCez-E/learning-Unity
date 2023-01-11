@@ -5,9 +5,11 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UIBase : MonoBehaviour
+public abstract class UIBase : MonoBehaviour
 {
     Dictionary<Type, UnityEngine.Object[]> objects = new Dictionary<Type, UnityEngine.Object[]>();
+
+    public abstract void Init();
 
     protected void Bind<T>(Type type) where T : UnityEngine.Object
     {
@@ -31,11 +33,12 @@ public class UIBase : MonoBehaviour
         return obj[idx] as T;
     }
 
+    protected GameObject GetObject(int idx) { return Get<GameObject>(idx); }
     protected Text GetText(int idx) { return Get<Text>(idx); }
     protected Button GetButton(int idx) { return Get<Button>(idx); }
     protected Image GetImage(int idx) { return Get<Image>(idx); }
 
-    public static void AddUIEvent(GameObject go, Action<PointerEventData> action, Define.UIEvent type = Define.UIEvent.Click)
+    public static void BindEvent(GameObject go, Action<PointerEventData> action, Define.UIEvent type = Define.UIEvent.Click)
     {
         UIEventHandler evt = Util.GetOrAddComponent<UIEventHandler>(go);
 

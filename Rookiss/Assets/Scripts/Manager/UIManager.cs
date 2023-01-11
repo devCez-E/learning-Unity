@@ -61,6 +61,17 @@ public class UIManager
         }
     }
 
+    public T CreateItem<T>(Transform parent, string name = null) where T : UIBase
+    {
+        if (string.IsNullOrEmpty(name)) name = typeof(T).Name;
+
+        GameObject go = Managers.Resource.Instantiate($"UI/Items/{name}");
+
+        if (parent != null) go.transform.SetParent(parent);
+
+        return Util.GetOrAddComponent<T>(go);
+    }
+
     public void ClosePopup()
     {
         if (popupStack.Count == 0) return;

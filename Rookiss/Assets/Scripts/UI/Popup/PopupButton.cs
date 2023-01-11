@@ -44,11 +44,11 @@ public class PopupButton : UIPopup
         Bind<GameObject>(typeof(GameObjects));
         Bind<Image>(typeof(Images));
 
-        GetButton((int)Buttons.PointBtn).gameObject.AddUIEvent(OnClickPointButton);
+        GetButton((int)Buttons.PointBtn).gameObject.BindEvent(OnClickPointButton);
 
         GameObject go = GetImage((int)Images.Pad).gameObject;
 
-        AddUIEvent(go, (PointerEventData data) => { go.transform.position = data.position; }, Define.UIEvent.Drag);
+        BindEvent(go, (PointerEventData data) => { go.transform.position = data.position; }, Define.UIEvent.Drag);
     }
 
     public void OnClickPointButton(PointerEventData data)
