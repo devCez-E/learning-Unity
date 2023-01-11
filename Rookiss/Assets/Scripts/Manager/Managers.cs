@@ -5,18 +5,16 @@ using UnityEngine;
 public class Managers : MonoBehaviour
 {
     private static Managers instance;
-    public static Managers Instance { get { Init(); return instance; } }
-
-
     private InputManager input = new InputManager();
-    public static InputManager Input { get { return Instance.input; } }
-
-
     private ResourceManager resource = new ResourceManager();
-    public static ResourceManager Resource { get { return Instance.resource; } }
-
     private UIManager ui = new UIManager();
+    private GameManager game = new GameManager();
+
+    public static Managers Instance { get { Init(); return instance; } }
+    public static InputManager Input { get { return Instance.input; } }
+    public static ResourceManager Resource { get { return Instance.resource; } }
     public static UIManager UI { get { return Instance.ui; } }
+    public static GameManager Game { get { return Instance.game; } }
 
     private void Start()
     {
