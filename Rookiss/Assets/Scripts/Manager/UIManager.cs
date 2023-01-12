@@ -100,6 +100,12 @@ public class UIManager
         }
     }
 
+    public void Clear()
+    {
+        CloseAllPopup();
+        sceneStack = null;
+    }
+
     public void CloseSceneUI()
     {
         if (sceneStack == null) return;
