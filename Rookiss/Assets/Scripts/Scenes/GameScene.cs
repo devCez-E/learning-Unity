@@ -11,6 +11,8 @@ public class GameScene : BaseScene
         SceneType = Define.Scene.Game;
 
         Managers.UI.ShowScene<UIInven>();
+
+        for (int i = 0; i < 5; i++) Managers.Resource.Instantiate("Prefabs/UnityPool");
     }
 
     public override void Clear()
