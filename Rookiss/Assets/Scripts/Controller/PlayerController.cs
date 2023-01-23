@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 // 1. Position Vector
 // 2. Direction Vector
@@ -158,7 +159,7 @@ public class PlayerController : MonoBehaviour
     void UpdateMoving()
     {
         Vector3 dir = destination - transform.position;
-        if (dir.magnitude < 0.001f)
+        if (dir.magnitude < 0.1f)
         {
             moveToDest = false;
             state = PlayerState.Idle;
@@ -166,7 +167,17 @@ public class PlayerController : MonoBehaviour
         else
         {
             float moveDist = Mathf.Clamp(speed * Time.deltaTime, 0, dir.magnitude);
-            transform.position += dir.normalized * moveDist;
+
+            NavMeshAgent nma = gameObject.GetComponent<NavMeshAgent>();
+            nma.Move(dir.normalized * moveDist);
+            //transform.position += dir.normalized * moveDist;            
+
+            if (Physics.Raycast(transform.position + Vector3.up * 0.5f, dir, 1.0f, LayerMask.GetMask("Block")))
+            {
+                state = PlayerState.Idle;
+                return;
+            }
+
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), 10 * Time.deltaTime);
         }
 

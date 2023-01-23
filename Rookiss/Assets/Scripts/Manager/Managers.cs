@@ -13,7 +13,7 @@ public class Managers : MonoBehaviour
     private PoolManager pool = new PoolManager();
     private DataManager data = new DataManager();
 
-    public static Managers Instance { get { Init(); return instance; } }
+    public static Managers Instance { get { if(instance == null) Init(); return instance; } }
     public static InputManager Input { get { return Instance.input; } }
     public static ResourceManager Resource { get { return Instance.resource; } }
     public static UIManager UI { get { return Instance.ui; } }
