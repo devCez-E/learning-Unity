@@ -48,6 +48,7 @@ public enum PlayerState
     Die,
     Move,
     Idle,
+    Skill,
     Channeling,
     Jump,
     Fall,
@@ -55,7 +56,10 @@ public enum PlayerState
 
 public class PlayerController : MonoBehaviour
 {
-    float speed = 10.0f;
+    PlayerStat stat;
+
+    int mask = 1 << (int)Define.Layer.Ground | 1 << (int)Define.Layer.Monster;
+
     float yAngle = 0.0f;
     float wait_run_ratio = 0.0f;
 
@@ -66,6 +70,8 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        stat = gameObject.GetOrAddComponent<PlayerStat>();
+
         Managers.Input.KeyAction -= OnKeyboard;
         Managers.Input.KeyAction += OnKeyboard;
         Managers.Input.MouseAction -= OnMouseClicked;
@@ -103,28 +109,28 @@ public class PlayerController : MonoBehaviour
             //transform.rotation = Quaternion.LookRotation(Vector3.forward);
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.forward), 0.2f);
             //transform.Translate(Vector3.forward * speed * Time.deltaTime);
-            transform.position += Vector3.forward * speed * Time.deltaTime;
+            transform.position += Vector3.forward * stat.MoveSpeed * Time.deltaTime;
         }
         else if (Input.GetKey(KeyCode.S))
         {
             //transform.rotation = Quaternion.LookRotation(Vector3.back);
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.back), 0.2f);
             //transform.Translate(Vector3.back * speed * Time.deltaTime);
-            transform.position += Vector3.back * speed * Time.deltaTime;
+            transform.position += Vector3.back * stat.MoveSpeed * Time.deltaTime;
         }
         else if (Input.GetKey(KeyCode.A))
         {
             //transform.rotation = Quaternion.LookRotation(Vector3.left);
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.left), 0.2f);
             //transform.Translate(Vector3.left * speed * Time.deltaTime);
-            transform.position += Vector3.left * speed * Time.deltaTime;
+            transform.position += Vector3.left * stat.MoveSpeed * Time.deltaTime;
         }
         else if (Input.GetKey(KeyCode.D))
         {
             //transform.rotation = Quaternion.LookRotation(Vector3.right);
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.right), 0.2f);
             //transform.Translate(Vector3.right * speed * Time.deltaTime);
-            transform.position += Vector3.right * speed * Time.deltaTime;
+            transform.position += Vector3.right * stat.MoveSpeed * Time.deltaTime;
         }
         //transform.position += transform.TransformDirection(Vector3.forward * speed * Time.deltaTime);
 
@@ -138,11 +144,20 @@ public class PlayerController : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, 100.0f, LayerMask.GetMask("Wall")))
+        if (Physics.Raycast(ray, out hit, 100.0f, mask))
         {
             destination = hit.point;
             moveToDest = true;
             state = PlayerState.Move;
+
+            if(hit.collider.gameObject.layer == (int)Define.Layer.Monster)
+            {
+                Debug.Log("Monster Clicked!!");
+            }
+            else
+            {
+                Debug.Log("Gound Clicked!!");
+            }
         }
     }
 
@@ -166,7 +181,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            float moveDist = Mathf.Clamp(speed * Time.deltaTime, 0, dir.magnitude);
+            float moveDist = Mathf.Clamp(stat.MoveSpeed * Time.deltaTime, 0, dir.magnitude);
 
             NavMeshAgent nma = gameObject.GetComponent<NavMeshAgent>();
             nma.Move(dir.normalized * moveDist);

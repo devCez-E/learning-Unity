@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class Define : MonoBehaviour
 {
+    public enum Layer
+    {
+        Ground = 8,
+        Monster,
+        Block,
+    }
+
     public enum Sound
     {
         Bgm,
