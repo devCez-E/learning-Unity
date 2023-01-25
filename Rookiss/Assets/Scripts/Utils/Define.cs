@@ -35,6 +35,8 @@ public class Define : MonoBehaviour
     public enum MouseEvent
     {
         Press,
+        PointerDown,
+        PointerUp,
         Click,
     }
 
