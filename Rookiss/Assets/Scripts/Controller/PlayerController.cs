@@ -104,6 +104,8 @@ public class PlayerController : MonoBehaviour
         Managers.Input.KeyAction += OnKeyboard;
         Managers.Input.MouseAction -= OnMouseEvent;
         Managers.Input.MouseAction += OnMouseEvent;
+
+        Managers.UI.CreateWorldspaceUI<HPBar>(transform);
     }
 
     private void Update()
@@ -228,6 +230,15 @@ public class PlayerController : MonoBehaviour
 
     void OnHitEvent()
     {
+        if(lockTarget != null)
+        {
+            Stat targetStat = lockTarget.GetComponent<Stat>();
+            PlayerStat myStat = gameObject.GetComponent<PlayerStat>();
+
+            int damage = Mathf.Max(0, myStat.Attack - targetStat.Defense);
+            targetStat.HP -= damage;
+        }
+
         if (stopSkill)
         {
             State = PlayerState.Idle;
