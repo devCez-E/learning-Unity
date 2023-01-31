@@ -4,7 +4,18 @@ using UnityEngine;
 
 public class Define : MonoBehaviour
 {
-    public enum Layer
+    public enum State
+    {
+        Die,
+        Move,
+        Idle,
+        Skill,
+        Channeling,
+        Jump,
+        Fall,
+    }
+
+public enum Layer
     {
         Ground = 8,
         Monster,
