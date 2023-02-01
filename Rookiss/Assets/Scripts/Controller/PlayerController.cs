@@ -57,6 +57,7 @@ public class PlayerController : BaseController
     public override void Init()
     {
         stat = gameObject.GetOrAddComponent<PlayerStat>();
+        objType = Define.GameObj.Player;
 
         Managers.Input.KeyAction -= OnKeyboard;
         Managers.Input.KeyAction += OnKeyboard;

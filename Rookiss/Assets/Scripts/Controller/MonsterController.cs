@@ -18,8 +18,8 @@ public class MonsterController : BaseController
     public override void Init()
     {
         stat = gameObject.GetOrAddComponent<Stat>();
-
-        if(gameObject.GetComponentInChildren<HPBar>() == null) Managers.UI.CreateWorldspaceUI<HPBar>(transform);
+        objType = Define.GameObj.Monster;
+        if (gameObject.GetComponentInChildren<HPBar>() == null) Managers.UI.CreateWorldspaceUI<HPBar>(transform);
     }
 
     protected override void UpdateIdle()
@@ -80,6 +80,8 @@ public class MonsterController : BaseController
 
             int damage = Mathf.Max(0, myStat.Attack - targetStat.Defense);
             targetStat.HP -= damage;
+
+            if (targetStat.HP <= 0) Managers.Game.Despawn(targetStat.gameObject);
 
             if(targetStat.HP > 0)
             {

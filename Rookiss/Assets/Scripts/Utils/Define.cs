@@ -55,4 +55,11 @@ public enum Layer
     {
         QuaterView,
     }
+
+    public enum GameObj
+    {
+        Unknown,
+        Player,
+        Monster,
+    }
 }

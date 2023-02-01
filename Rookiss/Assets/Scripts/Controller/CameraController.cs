@@ -17,6 +17,8 @@ public class CameraController : MonoBehaviour
     {
         if(_mode == Define.CameraMode.QuaterView)
         {
+            if (!player.IsValid()) return;
+
             RaycastHit hit;
             if(Physics.Raycast(player.transform.position, delta, out hit, delta.magnitude, LayerMask.GetMask("Wall")))
             {
@@ -36,4 +38,6 @@ public class CameraController : MonoBehaviour
         _mode = Define.CameraMode.QuaterView;
         this.delta = _delta;
     }
+
+    public void SetPlayer(GameObject go) { this.player = go; }
 }

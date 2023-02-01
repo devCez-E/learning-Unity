@@ -13,6 +13,8 @@ public abstract class BaseController : MonoBehaviour
     [SerializeField]
     protected Define.State state = Define.State.Idle;
 
+    public Define.GameObj objType { get; protected set; } = Define.GameObj.Unknown;
+
     public Define.State State
     {
         get { return state; }

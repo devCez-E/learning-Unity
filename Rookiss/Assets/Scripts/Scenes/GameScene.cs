@@ -12,7 +12,13 @@ public class GameScene : BaseScene
 
         Managers.UI.ShowScene<UIInven>();
 
-        //for (int i = 0; i < 5; i++) Managers.Resource.Instantiate("Prefabs/UnityPool");
+        Dictionary<int, Data.Stat> dict = Managers.Data.StatDict;
+        gameObject.GetOrAddComponent<CursorController>();
+
+        GameObject player = Managers.Game.Spawn(Define.GameObj.Player, "Prefabs/UnityChan");
+        Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(player);
+
+        Managers.Game.Spawn(Define.GameObj.Monster, "Prefabs/Knight");
     }
 
     public override void Clear()
