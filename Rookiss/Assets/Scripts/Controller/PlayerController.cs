@@ -134,6 +134,8 @@ public class PlayerController : BaseController
         }
 
         Vector3 dir = destination - transform.position;
+        dir.y = 0;
+
         if (dir.magnitude < 0.1f)
         {
             moveToDest = false;
@@ -167,10 +169,7 @@ public class PlayerController : BaseController
         if(lockTarget != null)
         {
             Stat targetStat = lockTarget.GetComponent<Stat>();
-            PlayerStat myStat = gameObject.GetComponent<PlayerStat>();
-
-            int damage = Mathf.Max(0, myStat.Attack - targetStat.Defense);
-            targetStat.HP -= damage;
+            targetStat.OnAttacked(stat);
         }
 
         if (stopSkill)

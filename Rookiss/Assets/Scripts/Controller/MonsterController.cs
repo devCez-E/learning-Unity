@@ -15,6 +15,8 @@ public class MonsterController : BaseController
 
     bool stopSkill = false;
 
+
+
     public override void Init()
     {
         stat = gameObject.GetOrAddComponent<Stat>();
@@ -24,7 +26,7 @@ public class MonsterController : BaseController
 
     protected override void UpdateIdle()
     {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        GameObject player = Managers.Game.GetPlayer();
         if (player == null) return;
 
         float distance = (player.transform.position - this.transform.position).magnitude;
@@ -76,10 +78,7 @@ public class MonsterController : BaseController
         if (lockTarget != null)
         {
             Stat targetStat = lockTarget.GetComponent<Stat>();
-            Stat myStat = gameObject.GetComponent<Stat>();
-
-            int damage = Mathf.Max(0, myStat.Attack - targetStat.Defense);
-            targetStat.HP -= damage;
+            targetStat.OnAttacked(stat);
 
             if (targetStat.HP <= 0) Managers.Game.Despawn(targetStat.gameObject);
 

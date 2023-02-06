@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -34,6 +35,10 @@ public class GameManager
     GameObject player;
     HashSet<GameObject> monsters = new HashSet<GameObject>();
 
+    public Action<int> OnSpawnEvent;
+
+    public GameObject GetPlayer() { return player; }
+
     public GameObject Spawn(Define.GameObj type, string path, Transform parent = null)
     {
         GameObject go = Managers.Resource.Instantiate(path, parent);
@@ -46,6 +51,7 @@ public class GameManager
                 break;
             case Define.GameObj.Monster:
                 monsters.Add(go);
+                if (OnSpawnEvent != null) OnSpawnEvent.Invoke(1);
                 break;
         }
 
@@ -64,7 +70,11 @@ public class GameManager
                 if (player == go) player = null;
                 break;
             case Define.GameObj.Monster:
-                if (monsters.Contains(go)) monsters.Remove(go);
+                if (monsters.Contains(go))
+                {
+                    monsters.Remove(go);
+                    if (OnSpawnEvent != null) OnSpawnEvent.Invoke(-1);
+                }
                 break;
         }
 
